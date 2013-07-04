@@ -22,11 +22,11 @@ RoomManager.prototype.roomForUserId = function(user_id, callback) {
     if (selectedRoom == -1) {
         room = new Room(user_id);
         this.availableRoomList.push(room);
+        this.roomList[room.identifier] = room;
     }
     else {
         room = this.availableRoomList.splice(selectedRoom,1)[0];
         room.addUser(user_id);
-        this.roomList[room.identifier] = room;
     }
     room.addMessage(new SystemMessage(user_id + " has joined the room"));
     callback(room);
