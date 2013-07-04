@@ -5,8 +5,12 @@ var port = 22222;
 var RoomManager = require("./models/room_manager").RoomManager;
 var Message = require("./models/message").Message;
 
+app.configure(function() {
+    app.use(express.static(__dirname + "/public"));
+})
+
 app.get("/", function(req, res) {
-    res.send("It Works");
+    res.sendfile("./public/index.html");
 });
 
 app.get("/register/:user_id", function(req, res) {
