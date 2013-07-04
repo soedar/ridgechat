@@ -5,11 +5,6 @@ var port = 22222;
 var RoomManager = require("./models/room_manager").RoomManager;
 RoomManager = new RoomManager();
 
-app.configure(function() {
-    app.set("views", __dirname + "/views");
-    app.set("view engine", "jade");
-});
-
 app.get("/", function(req, res) {
     res.send("It Works");
 });

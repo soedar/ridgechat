@@ -3,8 +3,7 @@
     "version": "0.0.1",
     "description": "Ridge Chat",
     "dependencies": {
-        "express": "latest",
-        "jade": "latest"
+        "express": "latest"
     },
     "author": "soedar"
 }
