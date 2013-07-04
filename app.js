@@ -3,7 +3,6 @@ var app = express();
 var port = 22222;
 
 var RoomManager = require("./models/room_manager").RoomManager;
-RoomManager = new RoomManager();
 
 app.get("/", function(req, res) {
     res.send("It Works");
@@ -11,7 +10,7 @@ app.get("/", function(req, res) {
 
 app.get("/register/:user_id", function(req, res) {
     RoomManager.roomForUserId(req.params.user_id, function(room) {
-        res.send(room.identifier);
+        res.send(room);
     });
 });
 

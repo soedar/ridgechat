@@ -1,3 +1,6 @@
+var SystemMessage = require("./message").SystemMessage;
+var Utility = require("../utility").Utility;
+
 RoomManager = function() {};
 
 RoomManager.prototype.roomList = {};
@@ -25,15 +28,13 @@ RoomManager.prototype.roomForUserId = function(user_id, callback) {
         room.addUser(user_id);
         this.roomList[room.identifier] = room;
     }
+    room.addMessage(new SystemMessage(user_id + " has joined the room"));
     callback(room);
 }
 
-exports.RoomManager = RoomManager;
-
-
 Room = function(user_id) {
     this.user_ids = [user_id];
-    this.identifier = randomId();
+    this.identifier = Utility.getRandomId(10);
     this.messages = [];
 }
 
@@ -41,15 +42,8 @@ Room.prototype.addUser = function(user_id) {
     this.user_ids.push(user_id);
 }
 
-
-// Shamelessly taken from csharptest.net's answer on SO
-// http://stackoverflow.com/questions/1349404/generate-a-string-of-5-random-characters-in-javascript/8084248#8084248
-function randomId() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 10; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
+Room.prototype.addMessage = function(message) {
+    this.messages.push(message);
 }
+
+exports.RoomManager = new RoomManager();
