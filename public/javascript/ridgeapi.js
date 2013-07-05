@@ -11,8 +11,8 @@ RidgeAPIClass.prototype.registerLocalId = function(localId, callback) {
     });
 }
 
-RidgeAPIClass.prototype.loadMessageForRoom = function(roomId, callback) {
-    $.get("/room/" + roomId + "/messages", function(data) {
+RidgeAPIClass.prototype.loadMessagesForRoom = function(roomId, lastTimestamp, callback) {
+    $.get("/room/" + roomId + "/messages/" + lastTimestamp, function(data) {
         if (data.success) {
             callback(data.messages);
         }
@@ -24,7 +24,7 @@ RidgeAPIClass.prototype.loadMessageForRoom = function(roomId, callback) {
 
 RidgeAPIClass.prototype.addMessageForRoom = function(roomId, userId, messageVal, callback) {
     var data = {message: messageVal};
-    $.post("/room/" + roomId + "/post/" + userId, data, function(data) {
+    $.post("/room/" + roomId + "/" + userId + "/post", data, function(data) {
         callback()
     });
 };

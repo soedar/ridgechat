@@ -1,4 +1,5 @@
 var ROOM_ID;
+var LAST_TIMESTAMP = 0;
 
 $(document).ready(function() {
     disableAllInput(true);
@@ -10,17 +11,18 @@ $(document).ready(function() {
         ROOM_ID = roomId;
         disableAllInput(false);
         pollForMessages(roomId);
-        window.setInterval(function() { pollForMessages(roomId) }, 5000);
     });
 });
 
-
 function pollForMessages(roomId) {
-    RidgeAPI.loadMessageForRoom(roomId, function(messages) {
-        $('#chat-box').empty();
-        for (var i=0;i<messages.length;i++) {
-            addMessage(messages[i]);
+    RidgeAPI.loadMessagesForRoom(roomId, LAST_TIMESTAMP, function(messages) {
+        if (messages.length > 0) {
+            for (var i=0;i<messages.length;i++) {
+                addMessage(messages[i]);
+                LAST_TIMESTAMP = messages[i].timestamp;
+            }
         }
+        pollForMessages(roomId);
     });
 }
 
@@ -58,7 +60,6 @@ function registerInputEventHandlers() {
         var message = $("#input-message").val();
         var localId = getLocalId();
         RidgeAPI.addMessageForRoom(ROOM_ID, localId, message, function() {
-            pollForMessages(ROOM_ID);
         });
 
         $("#input-message").val("");

@@ -27,23 +27,34 @@ app.get("/register/:user_id", function(req, res) {
     });
 });
 
-app.get("/room/:room_id/messages", function(req, res) {
+app.get("/room/:room_id/messages/:last_timestamp", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
+
     var output;
-    if (room) {
-        output = {"success": true, "messages": room.messages};
+    var messages = room.messagesSince(req.params.last_timestamp);
+
+    if (messages.length > 0) {
+        output = {"success": true, "messages": messages};
+        res.send(output);
     }
+
     else {
-        output = {"success": false};
+        room.addListener(6000, {success: function(message) {
+            output = {"success": true, "messages": message};
+            res.send(output);
+        },
+        timeout: function() {
+            output = {"success": true, "messages": []};
+            res.send(output);
+        }});
     }
-    res.send(output);
 });
 
 app.get("/stats", function(req, res) {
     res.send({"rooms": RoomManager.roomList});
 });
 
-app.post("/room/:room_id/post/:user_id", function(req, res) {
+app.post("/room/:room_id/:user_id/post", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
     if (!room) {
         res.send({"success": false});

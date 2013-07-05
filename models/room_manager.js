@@ -36,6 +36,8 @@ Room = function(user_id) {
     this.user_ids = [user_id];
     this.identifier = Utility.getRandomId(10);
     this.messages = [];
+    this.listeners = [];
+    this.timers = [];
 }
 
 Room.prototype.addUser = function(user_id) {
@@ -44,6 +46,42 @@ Room.prototype.addUser = function(user_id) {
 
 Room.prototype.addMessage = function(message) {
     this.messages.push(message);
+
+    for (var i=0;i<this.timers.length;i++) {
+        var timer = this.timers[i];
+        clearTimeout(timer);
+    }
+
+    for (var i=0;i<this.listeners.length;i++) {
+        var listener = this.listeners[i];
+        listener.success(message);
+    }
+
+    this.listeners = [];
+    this.timers = [];
+}
+
+Room.prototype.addListener = function(timeout, callbacks) {
+    this.listeners.push(callbacks);
+    var timer = setTimeout(function() {
+        callbacks.timeout();
+        this.timers = [];
+    }, timeout);
+
+    this.timers.push(timer);
+}
+
+Room.prototype.messagesSince = function(timestamp) {
+    var outputMessages = [];
+    var timestamp = parseInt(timestamp);
+
+    for (var i=0;i<this.messages.length;i++) {
+        var message = this.messages[i];
+        if (message.timestamp > timestamp) {
+            outputMessages.push(message);
+        }
+    } 
+    return outputMessages;
 }
 
 exports.RoomManager = new RoomManager();
