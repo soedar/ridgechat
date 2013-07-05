@@ -39,6 +39,10 @@ app.get("/room/:room_id/messages", function(req, res) {
     res.send(output);
 });
 
+app.get("/stats", function(req, res) {
+    res.send({"rooms": RoomManager.roomList});
+});
+
 app.post("/room/:room_id/post/:user_id", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
     if (!room) {
