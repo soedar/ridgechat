@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-var port = 22222;
+var port = process.env.PORT || 22222; // for Heroku deployment
 var timeout = 15000;
 
 var RoomManager = require("./models/room_manager").RoomManager;
