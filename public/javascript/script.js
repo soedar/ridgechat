@@ -41,6 +41,9 @@ function addMessage(message) {
                 messageVal = "<strong>Stranger</strong> joined the room.";
             }
         }
+        else if (message.msg_type == "LEFT") {
+            messageVal = "<strong>Stranger</strong> left the room.";
+        }
     }
 
     else {
@@ -60,7 +63,7 @@ function addMessage(message) {
     messageElement.html(messageVal);
     $("#chat-box").append(messageElement);
     $("#chat-box").stop().animate({
-        scollTop: $("#chat-box").scrollHeight
+        scrollTop: $("#chat-box")[0].scrollHeight
     }, 800);
 }
 
