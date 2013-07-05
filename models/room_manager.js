@@ -28,7 +28,7 @@ RoomManager.prototype.roomForUserId = function(user_id, callback) {
         room = this.availableRoomList.splice(selectedRoom,1)[0];
         room.addUser(user_id);
     }
-    room.addMessage(new SystemMessage(user_id + " has joined the room"));
+    room.addMessage(new SystemMessage("JOIN", user_id));
     callback(room);
 }
 

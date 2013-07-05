@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var port = 22222;
+var timeout = 6000;
 
 var RoomManager = require("./models/room_manager").RoomManager;
 var Message = require("./models/message").Message;
@@ -39,7 +40,7 @@ app.get("/room/:room_id/messages/:last_timestamp", function(req, res) {
     }
 
     else {
-        room.addListener(6000, {success: function(message) {
+        room.addListener(timeout, {success: function(message) {
             output = {"success": true, "messages": message};
             res.send(output);
         },

@@ -33,22 +33,35 @@ function addMessage(message) {
 
     if (message.user_id == "0") {
         messageElement = messageElement.addClass("alert-warning");
-    }
-
-    else if (message.user_id == localId) {
-        messageElement = messageElement.addClass("alert-success");
-        messageVal = "<strong>You: </strong>";
+        if (message.msg_type == "JOIN") {
+            if (message.message == localId) {
+                messageVal = "<strong>You</strong> joined the room.";
+            }
+            else {
+                messageVal = "<strong>Stranger</strong> joined the room.";
+            }
+        }
     }
 
     else {
-        messageElement = messageElement.addClass("alert-info");
-        messageVal = "<strong>Stranger: </strong>";
+        if (message.user_id == localId) {
+            messageElement = messageElement.addClass("alert-success");
+            messageVal = "<strong>You: </strong>";
+        }
+
+        else {
+            messageElement = messageElement.addClass("alert-info");
+            messageVal = "<strong>Stranger: </strong>";
+        }
+
+        messageVal += message.message;
     }
 
-    messageVal += message.message;
     messageElement.html(messageVal);
-
     $("#chat-box").append(messageElement);
+    $("#chat-box").stop().animate({
+        scollTop: $("#chat-box").scrollHeight
+    }, 800);
 }
 
 function disableAllInput(shouldDisable) {
