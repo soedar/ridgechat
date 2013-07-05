@@ -1,5 +1,6 @@
 var ROOM_ID;
 var LAST_TIMESTAMP = 0;
+var LOCAL_ID = null;
 
 $(document).ready(function() {
     disableAllInput(true);
@@ -62,6 +63,9 @@ function addMessage(message) {
 
     messageElement.html(messageVal);
     $("#chat-box").append(messageElement);
+
+    // Auto scroll to bottom code
+    // http://stackoverflow.com/a/12391116
     $("#chat-box").stop().animate({
         scrollTop: $("#chat-box")[0].scrollHeight
     }, 800);
@@ -84,18 +88,26 @@ function registerInputEventHandlers() {
 }
 
 function getLocalId() {
+    // Uncomment this to make sure that the same user won't be in the same
+    // room as himself
+    /*
     var localId = window.localStorage["localId"];
     if (!localId) {
         localId = getRandomId(10);
         window.localStorage["localId"] = localId;
     }
     return localId;
+    */
+
+    if (!LOCAL_ID) {
+        LOCAL_ID = getRandomId(10);
+    }
+    return LOCAL_ID;
 }
 
 function getRandomId(length) {
     // Shamelessly taken from csharptest.net's answer on SO
-    // http://stackoverflow.com/questions/1349404/generate-a-string-of-5-random-characters-in-javascript/8084248#8084248
-
+    // http://stackoverflow.com/a/1349426
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
