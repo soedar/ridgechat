@@ -7,6 +7,7 @@ var Message = require("./models/message").Message;
 
 app.configure(function() {
     app.use(express.static(__dirname + "/public"));
+    app.use(express.bodyParser());
 })
 
 app.get("/", function(req, res) {
@@ -38,7 +39,7 @@ app.get("/room/:room_id/messages", function(req, res) {
     res.send(output);
 });
 
-app.get("/room/:room_id/post/:user_id/:message", function(req, res) {
+app.post("/room/:room_id/post/:user_id", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
     if (!room) {
         res.send({"success": false});
@@ -59,7 +60,7 @@ app.get("/room/:room_id/post/:user_id/:message", function(req, res) {
         return;
     }
 
-    var message = new Message(user_id, req.params.message);
+    var message = new Message(user_id, req.body.message);
     room.addMessage(message);
     res.send({"success": true});
 });

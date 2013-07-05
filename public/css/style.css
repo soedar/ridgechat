@@ -1,5 +1,9 @@
 #chat-box {
-    border: 1px solid #AAA;
-    height: 400px;
     margin-bottom: 2px;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+.alert {
+    margin-bottom: 10px;
 }
