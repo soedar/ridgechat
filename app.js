@@ -52,7 +52,19 @@ app.get("/room/:room_id/messages/:last_timestamp", function(req, res) {
 });
 
 app.get("/stats", function(req, res) {
-    res.send({"rooms": RoomManager.roomList});
+    var rooms = [];
+
+    var roomList = RoomManager.roomList;
+    var roomIdentifiers = Object.keys(roomList);
+    for (var i=0;i<roomIdentifiers.length;i++) {
+        var identifier = roomIdentifiers[i];
+        var room = roomList[identifier];
+        rooms.push({"user_ids": room.user_ids,
+                    "identifier": identifier,
+                    "messages": room.messages});
+    }
+
+    res.send({"rooms": rooms});
 });
 
 app.post("/room/:room_id/:user_id/post", function(req, res) {
