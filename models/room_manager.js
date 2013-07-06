@@ -1,5 +1,6 @@
 var SystemMessage = require("./message").SystemMessage;
 var Utility = require("../utility").Utility;
+var Config = require("../config").Config;
 
 RoomManager = function() {};
 

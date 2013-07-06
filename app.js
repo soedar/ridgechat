@@ -1,12 +1,11 @@
 var express = require("express");
 var app = express();
-var port = process.env.PORT || 22222; // for Heroku deployment
-var timeout = 3000;
-var inactive_timeout = 10000;
+
 
 var RoomManager = require("./models/room_manager").RoomManager;
 var Message = require("./models/message").Message;
 var MessageListener = require("./models/message_listener").MessageListener;
+var Config = require("./config").Config;
 
 app.configure(function() {
     app.use(express.static(__dirname + "/public"));
@@ -32,7 +31,7 @@ app.get("/register/:user_id", function(req, res) {
 
 app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
-    room.clearInactiveUsers(inactive_timeout);
+    room.clearInactiveUsers(Config.inactiveTimeout);
 
     var output;
     var messages = room.messagesSince(req.params.last_timestamp);
@@ -43,7 +42,7 @@ app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
     }
 
     else {
-        var listener = new MessageListener(req.params.user_id, timeout);
+        var listener = new MessageListener(req.params.user_id, Config.timeout);
         listener.addSuccessCallback(function(messages) {
             output = {"success": true, "messages": messages};
             res.send(output);
@@ -100,5 +99,5 @@ app.get("/stats", function(req, res) {
     res.send({"rooms": rooms});
 });
 
-app.listen(port);
-console.log("Listening on port " + port);
+app.listen(Config.port);
+console.log("Listening on port " + Config.port);
