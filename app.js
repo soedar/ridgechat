@@ -25,7 +25,7 @@ app.get("/register/:user_id", function(req, res) {
         else {
             output = {"success": false};
         }
-        res.send(output);
+        res.json(output);
     });
 });
 
@@ -38,19 +38,19 @@ app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
 
     if (messages.length > 0) {
         output = {"success": true, "messages": messages};
-        res.send(output);
+        res.json(output);
     }
 
     else {
         var listener = new MessageListener(req.params.user_id, Config.messageTimeout);
         listener.addSuccessCallback(function(messages) {
             output = {"success": true, "messages": messages};
-            res.send(output);
+            res.json(output);
         });
 
         listener.addTimeoutCallback(function() {
             output = {"success": true, "messages": []};
-            res.send(output);
+            res.json(output);
         });
 
         room.addListener(listener);
@@ -60,7 +60,7 @@ app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
 app.post("/room/:room_id/:user_id/post", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
     if (!room) {
-        res.send({"success": false});
+        res.json({"success": false});
         return;
     }
 
@@ -74,13 +74,13 @@ app.post("/room/:room_id/:user_id/post", function(req, res) {
     }
 
     if (!userInChat) {
-        res.send({"success": false});
+        res.json({"success": false});
         return;
     }
 
     var message = new Message(user_id, req.body.message);
     room.addMessage(message);
-    res.send({"success": true});
+    res.json({"success": true});
 });
 
 app.get("/stats", function(req, res) {
@@ -96,7 +96,7 @@ app.get("/stats", function(req, res) {
                     "messages": room.messages});
     }
 
-    res.send({"rooms": rooms});
+    res.json({"rooms": rooms});
 });
 
 app.listen(Config.port);
