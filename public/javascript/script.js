@@ -1,41 +1,38 @@
 var ROOM_ID;
 var LAST_TIMESTAMP = 0;
-var LOCAL_ID = null;
+var LOCAL_ID = getLocalId();
 
 $(document).ready(function() {
     disableAllInput(true);
-    var localId = getLocalId();
-
     registerInputEventHandlers();
 
-    RidgeAPI.registerLocalId(localId, function(roomId) {
+    RidgeAPI.registerLocalId(LOCAL_ID, function(roomId) {
         ROOM_ID = roomId;
         disableAllInput(false);
-        pollForMessages(roomId);
+        pollForMessages();
     });
 });
 
-function pollForMessages(roomId) {
-    RidgeAPI.loadMessagesForRoom(roomId, LAST_TIMESTAMP, function(messages) {
+function pollForMessages() {
+    RidgeAPI.loadMessagesForRoom(ROOM_ID, LOCAL_ID, LAST_TIMESTAMP, function(messages) {
         if (messages.length > 0) {
             for (var i=0;i<messages.length;i++) {
                 addMessage(messages[i]);
                 LAST_TIMESTAMP = messages[i].timestamp;
             }
         }
-        pollForMessages(roomId);
+        pollForMessages();
     });
 }
 
 function addMessage(message) {
-    var localId = getLocalId();
     var messageElement = $("<div></div>").addClass("alert");
     var messageVal = "";
 
     if (message.user_id == "0") {
         messageElement = messageElement.addClass("alert-warning");
         if (message.msg_type == "JOIN") {
-            if (message.message == localId) {
+            if (message.message == LOCAL_ID) {
                 messageVal = "<strong>You</strong> joined the room.";
             }
             else {
@@ -48,7 +45,7 @@ function addMessage(message) {
     }
 
     else {
-        if (message.user_id == localId) {
+        if (message.user_id == LOCAL_ID) {
             messageElement = messageElement.addClass("alert-success");
             messageVal = "<strong>You: </strong>";
         }
@@ -78,8 +75,7 @@ function disableAllInput(shouldDisable) {
 function registerInputEventHandlers() {
     $("#form-message").submit(function(e) {
         var message = $("#input-message").val();
-        var localId = getLocalId();
-        RidgeAPI.addMessageForRoom(ROOM_ID, localId, message, function() {
+        RidgeAPI.addMessageForRoom(ROOM_ID, LOCAL_ID, message, function() {
         });
 
         $("#input-message").val("");
@@ -99,10 +95,7 @@ function getLocalId() {
     return localId;
     */
 
-    if (!LOCAL_ID) {
-        LOCAL_ID = getRandomId(10);
-    }
-    return LOCAL_ID;
+    return getRandomId(10);
 }
 
 function getRandomId(length) {

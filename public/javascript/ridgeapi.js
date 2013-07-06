@@ -11,8 +11,8 @@ RidgeAPIClass.prototype.registerLocalId = function(localId, callback) {
     });
 }
 
-RidgeAPIClass.prototype.loadMessagesForRoom = function(roomId, lastTimestamp, callback) {
-    $.get("/room/" + roomId + "/messages/" + lastTimestamp, function(data) {
+RidgeAPIClass.prototype.loadMessagesForRoom = function(roomId, userId, lastTimestamp, callback) {
+    $.get("/room/" + roomId  + "/" + userId + "/messages/" + lastTimestamp, function(data) {
         if (data.success) {
             callback(data.messages);
         }

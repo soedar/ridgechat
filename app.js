@@ -28,7 +28,7 @@ app.get("/register/:user_id", function(req, res) {
     });
 });
 
-app.get("/room/:room_id/messages/:last_timestamp", function(req, res) {
+app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
 
     var output;
@@ -49,22 +49,6 @@ app.get("/room/:room_id/messages/:last_timestamp", function(req, res) {
             res.send(output);
         }});
     }
-});
-
-app.get("/stats", function(req, res) {
-    var rooms = [];
-
-    var roomList = RoomManager.roomList;
-    var roomIdentifiers = Object.keys(roomList);
-    for (var i=0;i<roomIdentifiers.length;i++) {
-        var identifier = roomIdentifiers[i];
-        var room = roomList[identifier];
-        rooms.push({"user_ids": room.user_ids,
-                    "identifier": identifier,
-                    "messages": room.messages});
-    }
-
-    res.send({"rooms": rooms});
 });
 
 app.post("/room/:room_id/:user_id/post", function(req, res) {
@@ -91,6 +75,22 @@ app.post("/room/:room_id/:user_id/post", function(req, res) {
     var message = new Message(user_id, req.body.message);
     room.addMessage(message);
     res.send({"success": true});
+});
+
+app.get("/stats", function(req, res) {
+    var rooms = [];
+
+    var roomList = RoomManager.roomList;
+    var roomIdentifiers = Object.keys(roomList);
+    for (var i=0;i<roomIdentifiers.length;i++) {
+        var identifier = roomIdentifiers[i];
+        var room = roomList[identifier];
+        rooms.push({"user_ids": room.user_ids,
+                    "identifier": identifier,
+                    "messages": room.messages});
+    }
+
+    res.send({"rooms": rooms});
 });
 
 app.listen(port);
