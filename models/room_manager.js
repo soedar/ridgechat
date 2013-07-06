@@ -8,6 +8,8 @@ RoomManager.prototype.roomList = {};
 RoomManager.prototype.availableRoomList = [];
 
 RoomManager.prototype.roomForUserId = function(user_id, callback) {
+    this.clearInactiveRooms();
+
     var selectedRoom = -1;
 
     for (var i=0;i<this.availableRoomList.length;i++) {
@@ -26,11 +28,29 @@ RoomManager.prototype.roomForUserId = function(user_id, callback) {
         this.roomList[room.identifier] = room;
     }
     else {
-        room = this.availableRoomList.splice(selectedRoom,1)[0];
+        room = this.availableRoomList.splice(selectedRoom, 1)[0];
         room.addUser(user_id);
     }
     room.addMessage(new SystemMessage("JOIN", user_id));
     callback(room);
+}
+
+RoomManager.prototype.clearInactiveRooms = function() {
+    var inactiveRoomIndexes = [];
+    for (var i=0;i<this.availableRoomList.length;i++) {
+        var room = this.availableRoomList[i];
+        room.clearInactiveUsers(Config.inactiveTimeout);
+
+        var userIds = Object.keys(room.lastListenerTime);
+        if (userIds.length == 0) {
+            inactiveRoomIndexes.push(i);
+        }
+    }
+
+    for (var i=0;i<inactiveRoomIndexes.length;i++) {
+        var index = inactiveRoomIndexes[i];
+        this.availableRoomList.splice(index, 1);
+    }
 }
 
 Room = function(user_id) {
