@@ -66,8 +66,8 @@ app.post("/room/:room_id/:user_id/post", function(req, res) {
 
     var user_id = req.params.user_id;
     var userInChat = false;
-    for (var i=0;i<room.user_ids.length;i++) {
-        if (room.user_ids[i] == user_id) {
+    for (var i=0;i<room.userIds.length;i++) {
+        if (room.userIds[i] == user_id) {
             userInChat = true;
             break;
         }

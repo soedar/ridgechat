@@ -2,19 +2,19 @@ var SystemMessage = require("./message").SystemMessage;
 var Utility = require("../utility").Utility;
 var Config = require("../config").Config;
 
-RoomManager = function() {};
+RoomManager = function() {
+    this.roomList = {};
+    this.availableRoomList = [];
+};
 
-RoomManager.prototype.roomList = {};
-RoomManager.prototype.availableRoomList = [];
-
-RoomManager.prototype.roomForUserId = function(user_id, callback) {
+RoomManager.prototype.roomForUserId = function(userId, callback) {
     this.clearInactiveRooms();
 
     var selectedRoom = -1;
 
     for (var i=0;i<this.availableRoomList.length;i++) {
         var room = this.availableRoomList[i];
-        if (room.user_ids[0] != user_id) {
+        if (room.userIds[0] != userId) {
             selectedRoom = i;
             break;
         }
@@ -23,15 +23,15 @@ RoomManager.prototype.roomForUserId = function(user_id, callback) {
     var room;
     // There are no room available for the user
     if (selectedRoom == -1) {
-        room = new Room(user_id);
+        room = new Room(userId);
         this.availableRoomList.push(room);
         this.roomList[room.identifier] = room;
     }
     else {
         room = this.availableRoomList.splice(selectedRoom, 1)[0];
-        room.addUser(user_id);
+        room.addUser(userId);
     }
-    room.addMessage(new SystemMessage("JOIN", user_id));
+    room.addMessage(new SystemMessage("JOIN", userId));
     callback(room);
 }
 
@@ -53,16 +53,16 @@ RoomManager.prototype.clearInactiveRooms = function() {
     }
 }
 
-Room = function(user_id) {
-    this.user_ids = [user_id];
+Room = function(userId) {
+    this.userIds = [userId];
     this.identifier = Utility.getRandomId(10);
     this.messages = [];
     this.listeners = {};
     this.lastListenerTime = {};
 }
 
-Room.prototype.addUser = function(user_id) {
-    this.user_ids.push(user_id);
+Room.prototype.addUser = function(userId) {
+    this.userIds.push(userId);
 }
 
 Room.prototype.addMessage = function(message) {
@@ -77,10 +77,10 @@ Room.prototype.addMessage = function(message) {
 }
 
 Room.prototype.addListener = function(listener) {
-    this.listeners[listener.user_id] = listener;
+    this.listeners[listener.userId] = listener;
     listener.activateTimer();
 
-    this.lastListenerTime[listener.user_id] = (new Date()).getTime();
+    this.lastListenerTime[listener.userId] = (new Date()).getTime();
 }
 
 Room.prototype.messagesSince = function(timestamp) {

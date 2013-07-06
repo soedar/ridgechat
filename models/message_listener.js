@@ -1,5 +1,5 @@
-MessageListener = function(user_id, timeout) {
-    this.user_id = user_id;
+MessageListener = function(userId, timeout) {
+    this.userId = userId;
     this.timeout = timeout;
     this.timer = null;
     this.callbacks = {};

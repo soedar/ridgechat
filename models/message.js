@@ -1,11 +1,11 @@
-Message = function(user_id, message) {
-    this.user_id = user_id;
+Message = function(userId, message) {
+    this.userId = userId;
     this.message = message;
     this.timestamp = (new Date()).getTime();
 }
 
 SystemMessage = function(type, message) {
-    this.user_id = "0";
+    this.userId = "0";
     this.msg_type = type;
     this.message = message;
     this.timestamp = (new Date()).getTime();

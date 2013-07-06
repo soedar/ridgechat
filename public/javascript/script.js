@@ -29,7 +29,7 @@ function addMessage(message) {
     var messageElement = $("<div></div>").addClass("alert");
     var messageVal = "";
 
-    if (message.user_id == "0") {
+    if (message.userId == "0") {
         messageElement = messageElement.addClass("alert-warning");
         if (message.msg_type == "JOIN") {
             if (message.message == LOCAL_ID) {
@@ -45,7 +45,7 @@ function addMessage(message) {
     }
 
     else {
-        if (message.user_id == LOCAL_ID) {
+        if (message.userId == LOCAL_ID) {
             messageElement = messageElement.addClass("alert-success");
             messageVal = "<strong>You: </strong>";
         }
