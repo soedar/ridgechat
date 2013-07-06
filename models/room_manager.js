@@ -46,12 +46,12 @@ Room.prototype.addUser = function(user_id) {
 Room.prototype.addMessage = function(message) {
     this.messages.push(message);
 
-        var listenerIds = Object.keys(this.listeners);
-        for (var i=0;i<listenerIds.length;i++) {
-            var listenerId = listenerIds[i];
-            var listener = this.listeners[listenerId];
-            listener.sendMessages([message]);
-        }
+    var listenerIds = Object.keys(this.listeners);
+    for (var i=0;i<listenerIds.length;i++) {
+        var listenerId = listenerIds[i];
+        var listener = this.listeners[listenerId];
+        listener.sendMessages([message]);
+    }
 }
 
 Room.prototype.addListener = function(listener) {
