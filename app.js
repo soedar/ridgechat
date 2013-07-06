@@ -42,7 +42,7 @@ app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
     }
 
     else {
-        var listener = new MessageListener(req.params.user_id, Config.timeout);
+        var listener = new MessageListener(req.params.user_id, Config.messageTimeout);
         listener.addSuccessCallback(function(messages) {
             output = {"success": true, "messages": messages};
             res.send(output);
