@@ -1,10 +1,11 @@
 var express = require("express");
 var app = express();
 var port = process.env.PORT || 22222; // for Heroku deployment
-var timeout = 15000;
+var timeout = 3000;
 
 var RoomManager = require("./models/room_manager").RoomManager;
 var Message = require("./models/message").Message;
+var MessageListener = require("./models/message_listener").MessageListener;
 
 app.configure(function() {
     app.use(express.static(__dirname + "/public"));
@@ -40,14 +41,18 @@ app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
     }
 
     else {
-        room.addListener(timeout, {success: function(message) {
-            output = {"success": true, "messages": message};
+        var listener = new MessageListener(req.params.user_id, timeout);
+        listener.addSuccessCallback(function(messages) {
+            output = {"success": true, "messages": messages};
             res.send(output);
-        },
-        timeout: function() {
+        });
+
+        listener.addTimeoutCallback(function() {
             output = {"success": true, "messages": []};
             res.send(output);
-        }});
+        });
+
+        room.addListener(listener);
     }
 });
 

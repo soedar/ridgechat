@@ -36,8 +36,7 @@ Room = function(user_id) {
     this.user_ids = [user_id];
     this.identifier = Utility.getRandomId(10);
     this.messages = [];
-    this.listeners = [];
-    this.timers = [];
+    this.listeners = {};
 }
 
 Room.prototype.addUser = function(user_id) {
@@ -47,28 +46,17 @@ Room.prototype.addUser = function(user_id) {
 Room.prototype.addMessage = function(message) {
     this.messages.push(message);
 
-    for (var i=0;i<this.timers.length;i++) {
-        var timer = this.timers[i];
-        clearTimeout(timer);
-    }
-
-    for (var i=0;i<this.listeners.length;i++) {
-        var listener = this.listeners[i];
-        listener.success(message);
-    }
-
-    this.listeners = [];
-    this.timers = [];
+        var listenerIds = Object.keys(this.listeners);
+        for (var i=0;i<listenerIds.length;i++) {
+            var listenerId = listenerIds[i];
+            var listener = this.listeners[listenerId];
+            listener.sendMessages([message]);
+        }
 }
 
-Room.prototype.addListener = function(timeout, callbacks) {
-    this.listeners.push(callbacks);
-    var timer = setTimeout(function() {
-        callbacks.timeout();
-        this.timers = [];
-    }, timeout);
-
-    this.timers.push(timer);
+Room.prototype.addListener = function(listener) {
+    this.listeners[listener.user_id] = listener;
+    listener.activateTimer();
 }
 
 Room.prototype.messagesSince = function(timestamp) {
