@@ -37,6 +37,7 @@ Room = function(user_id) {
     this.identifier = Utility.getRandomId(10);
     this.messages = [];
     this.listeners = {};
+    this.lastListenerTime = {};
 }
 
 Room.prototype.addUser = function(user_id) {
@@ -57,6 +58,8 @@ Room.prototype.addMessage = function(message) {
 Room.prototype.addListener = function(listener) {
     this.listeners[listener.user_id] = listener;
     listener.activateTimer();
+
+    this.lastListenerTime[listener.user_id] = (new Date()).getTime();
 }
 
 Room.prototype.messagesSince = function(timestamp) {
@@ -70,6 +73,33 @@ Room.prototype.messagesSince = function(timestamp) {
         }
     } 
     return outputMessages;
+}
+
+Room.prototype.clearInactiveUsers = function(timeout) {
+    var inactiveUserIds = this.inactiveUsers(timeout);
+    for (var i=0;i<inactiveUserIds.length;i++) {
+        var inactiveUserId = inactiveUserIds[i];
+        this.addMessage(new SystemMessage("LEFT", inactiveUserId));
+        delete this.lastListenerTime[inactiveUserId];
+    }
+}
+
+Room.prototype.inactiveUsers = function(timeout) {
+    var inactiveUserIds = [];
+
+    var userIds = Object.keys(this.lastListenerTime);
+    var currentTime = (new Date()).getTime();
+
+    for (var i=0;i<userIds.length;i++) {
+        var userId = userIds[i];
+        var listenerTime = this.lastListenerTime[userId];
+
+        if (currentTime - listenerTime > timeout) {
+            inactiveUserIds.push(userId);
+        }
+    }
+
+    return inactiveUserIds;
 }
 
 exports.RoomManager = new RoomManager();

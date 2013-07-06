@@ -2,6 +2,7 @@ var express = require("express");
 var app = express();
 var port = process.env.PORT || 22222; // for Heroku deployment
 var timeout = 3000;
+var inactive_timeout = 10000;
 
 var RoomManager = require("./models/room_manager").RoomManager;
 var Message = require("./models/message").Message;
@@ -31,6 +32,7 @@ app.get("/register/:user_id", function(req, res) {
 
 app.get("/room/:room_id/:user_id/messages/:last_timestamp", function(req, res) {
     var room = RoomManager.roomList[req.params.room_id];
+    room.clearInactiveUsers(inactive_timeout);
 
     var output;
     var messages = room.messagesSince(req.params.last_timestamp);
