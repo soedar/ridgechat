@@ -1,11 +1,7 @@
-#RidgeChat
+# RidgeChat
 RidgeChat is an anonymous pair chatting web application written in Node.js.
 
-##Live Demo
-Deployed on Heroku: http://ridgechat.herokuapp.com/  
-If you are the only person in the room, open the url in another tab/window. Have fun talking to yourself.
-
-##API EndPoints
+## API EndPoints
 `GET /register/<user_id>`: Register user_id with RidgeChat. This endpoint returns a room_id, to be used for subsequent requests. RidgeChat will ensure that the user who called this method will not be in the same room as himself.  
 **Sample Request**: `/register/eLUBzHR0yQ`  
 **Sample Response**:  
